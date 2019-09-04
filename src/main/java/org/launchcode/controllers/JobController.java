@@ -41,6 +41,8 @@ public class JobController {
         // new Job and add it to the jobData data store. Then
         // redirect to the job detail view for the new Job.
 
+        //asks us to use jobData.add(newJob)
+
         return "";
 
     }
