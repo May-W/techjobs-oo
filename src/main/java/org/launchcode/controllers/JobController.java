@@ -37,13 +37,17 @@ public class JobController {
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public String add(Model model, @Valid JobForm jobForm, Errors errors) {
 
-        // TODO #6 - Validate the JobForm model, and if valid, create a
-        // new Job and add it to the jobData data store. Then
-        // redirect to the job detail view for the new Job.
-
-        //asks us to use jobData.add(newJob)
-
-        return "";
+        if (errors.hasErrors()) {
+            //what do I need here to display an error message to user
+            //note it asks us to pass jobForm, will need to use this somehow
+            return "new-job";
+        } else {
+            jobData.add(newJob);
+            //how do I extract the ID of the new job so I can direct to that job-detail page above?
+            //asks us to use jobData.add(newJob) to create a new Job object
+            //Need to extract form data and turn it into a newJob instance first
+            return "/job/?id=";
+        }
 
     }
 }
