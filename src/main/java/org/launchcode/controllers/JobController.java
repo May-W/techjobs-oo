@@ -1,5 +1,6 @@
 package org.launchcode.controllers;
 
+import org.launchcode.models.*;
 import org.launchcode.models.forms.JobForm;
 import org.launchcode.models.data.JobData;
 import org.springframework.stereotype.Controller;
@@ -8,6 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -35,19 +37,25 @@ public class JobController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String add(Model model, @Valid JobForm jobForm, Errors errors) {
+    public String add(Model model, @Valid JobForm jobForm, Errors errors, RedirectAttributes attributes) {
 
         if (errors.hasErrors()) {
-            //what do I need here to display an error message to user
-            //note it asks us to pass jobForm, will need to use this somehow
             return "new-job";
-        } else {
-            jobData.add(newJob);
-            //how do I extract the ID of the new job so I can direct to that job-detail page above?
-            //asks us to use jobData.add(newJob) to create a new Job object
-            //Need to extract form data and turn it into a newJob instance first
-            return "/job/?id=";
         }
+        System.out.println("**************" + jobForm.getCoreCompetencyId());
+        String jobName = jobForm.getName();
+        Employer jobEmployer = jobData.getEmployers().findById(jobForm.getEmployerId());
+        Location jobLocation = jobData.getLocations().findById(jobForm.getLocationId());
+        PositionType jobPosition = jobData.getPositionTypes().findById(jobForm.getPositionTypeId());
+        CoreCompetency jobCompetency = jobData.getCoreCompetencies().findById(jobForm.getCoreCompetencyId());
+
+        Job newJob = new Job(jobName, jobEmployer, jobLocation, jobPosition, jobCompetency);
+
+        jobData.add(newJob);
+
+        attributes.addAttribute("id", newJob.getId());
+
+        return "redirect:/job";
 
     }
 }
